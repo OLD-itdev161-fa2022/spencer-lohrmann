@@ -20,7 +20,7 @@ app.get('/', (req, res) =>
     res.send('http get request sent to root api endpoint')
 );
 
-// API endpoints
+//  API endpoints
 /*
 * @route POST api/users
 * @desc Register user
