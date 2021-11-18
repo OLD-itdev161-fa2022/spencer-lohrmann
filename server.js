@@ -8,6 +8,7 @@ import config from 'config';
 import User from './models/User';
 import Post from './models/Post';
 import auth from './middleware/auth';
+import path from 'path';
 
 // Initialize express application
 const app = express();
@@ -24,16 +25,6 @@ app.use(
 );
 
 // API endpoints
-/**
- * @route GET /
- * @desc Test endpoint
- */
-app.get('/', (req, res) =>
-  res.send('http get request sent to root api endpoint')
-);
-
-app.get('/api/', (req, res) => res.send('http get request sent to api'));
-
 /**
  * @route POST api/users
  * @desc Register user
@@ -302,7 +293,19 @@ app.put('/api/posts/:id', auth, async (req, res) => {
   }
 });
 
+//Serve build files in production
+if (process.env.NODE_ENV === 'production') {
+  //Set the build folder
+  app.use(express.static('client/build'));
+
+  //Route all requests to serve up the built index file
+  //(i.e., [current working directory]/client/build/index.html)
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
+}
+
 
 // Connection listener
-const port = 5000;
+const port = process.end.PORT || 5000;
 app.listen(port, () => console.log(`Express server running on port ${port}`));
